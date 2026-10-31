@@ -1,0 +1,12 @@
+/build*/
+/out/
+/.deps/
+/cmake-build-*/
+*.swp
+.vscode/
+.idea/
+compile_commands.json
+/screenshots/
+/user_data/
+Testing/
+/.claude/
