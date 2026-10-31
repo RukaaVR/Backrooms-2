@@ -10,5 +10,4 @@ include(Catch)
 # be created, so plain `ctest` stays green on headless machines.
 catch_discover_tests(br_tests
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    ADD_TAGS_AS_LABELS
     DISCOVERY_MODE PRE_TEST)
