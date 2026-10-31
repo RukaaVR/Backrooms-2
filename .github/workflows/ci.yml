@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    name: Linux ${{ matrix.compiler }} ${{ matrix.config }}${{ matrix.asan && ' +ASan/UBSan' || '' }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { compiler: gcc,   cc: gcc,   cxx: g++,     config: Release, asan: false }
+          - { compiler: clang, cc: clang, cxx: clang++, config: Debug,   asan: true  }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build ccache xvfb mesa-utils libgl1-mesa-dri \
+            libx11-dev libxext-dev libxrandr-dev libxi-dev libxcursor-dev libxfixes-dev libxss-dev \
+            libxkbcommon-dev libwayland-dev wayland-protocols libgl-dev libegl-dev libopenal-dev
+      - name: ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ccache-${{ matrix.compiler }}-${{ matrix.config }}-${{ github.sha }}
+          restore-keys: ccache-${{ matrix.compiler }}-${{ matrix.config }}-
+      - name: Configure
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DBR_ENABLE_ASAN=${{ matrix.asan && 'ON' || 'OFF' }} -DBR_WARNINGS_AS_ERRORS=ON
+      - name: Build
+        run: cmake --build build -j
+      - name: Tests (software GL under Xvfb)
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          ASAN_OPTIONS: detect_leaks=1
+        run: xvfb-run -a -s "-screen 0 1920x1080x24" ctest --test-dir build --output-on-failure
+      - name: Smoke run + screenshot
+        if: ${{ !matrix.asan }}
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" timeout 300 build/bin/BackroomsBeyondReality \
+            --scene dev --width 960 --height 540 --windowed --no-vsync --user-dir ci_user \
+            --screenshot screenshots/dev.png --warmup-frames 10
+      - uses: actions/upload-artifact@v4
+        if: ${{ !matrix.asan }}
+        with:
+          name: screenshots-${{ matrix.compiler }}
+          path: screenshots/
+
+  windows:
+    name: Windows MSVC Release
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build -j
+      - name: Unit tests (non-GL)
+        run: ctest --test-dir build --output-on-failure -LE gl
+      - name: Package
+        run: cpack --config build/CPackConfig.cmake -B package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BackroomsBeyondReality-windows
+          path: package/*.zip
