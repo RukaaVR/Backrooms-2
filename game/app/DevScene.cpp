@@ -18,7 +18,7 @@ DevScene::~DevScene() {
     for (auto h : m_meshes) m_ctx.renderer.destroyMesh(h);
 }
 
-void DevScene::build() {
+bool DevScene::build() {
     auto& r = m_ctx.renderer;
     auto& reg = m_ctx.materials;
     // Placeholder solid materials (the material library replaces these ids
@@ -78,9 +78,10 @@ void DevScene::build() {
     env.fogDensity = 0.01f;
     env.exposureCompensation = 0.0f;
     r.setEnvironment(env);
+    return true;
 }
 
-void DevScene::update(float dt, Camera& camera) {
+void DevScene::update(float dt, float /*alpha*/, Camera& camera) {
     m_time += dt;
     auto& in = m_ctx.input;
     const float sens = 0.0022f * m_ctx.settings.controls.mouseSensitivity;

@@ -24,7 +24,8 @@ struct LaunchOptions {
     fs::path userDir;              // override per-user data dir (hermetic tests)
     fs::path screenshotPath;       // capture one frame after warm-up then exit
     fs::path screenshotSuiteDir;   // run the deterministic visual test suite
-    std::string screenshotScene;   // single named scene from the suite
+    std::string scene;             // dev/test scene name (see SceneRegistry.cpp); default "dev"
+    std::string screenshotShot;    // single named shot from the screenshot suite
     int warmupFrames = 30;         // frames rendered before capture
     int exitAfterFrames = 0;       // >0: quit after N frames (smoke tests)
     std::optional<glm::vec3> cameraPosition;

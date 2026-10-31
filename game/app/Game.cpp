@@ -2,7 +2,7 @@
 
 #include "engine/core/Log.h"
 #include "engine/resources/Image.h"
-#include "game/app/DevScene.h"
+#include "game/app/GameScene.h"
 
 #include <SDL3/SDL.h>
 
@@ -117,8 +117,12 @@ bool Game::initialize() {
                                                           m_renderer, m_physics, m_audio, m_materials, m_levels});
     applySettings();
 
-    m_devScene = std::make_unique<DevScene>(*m_context);
-    m_devScene->build();
+    const std::string sceneName = m_options.scene.empty() ? std::string("dev") : m_options.scene;
+    m_scene = createScene(sceneName, *m_context);
+    if (!m_scene || !m_scene->build()) {
+        BR_LOG_ERROR("game", "Failed to build scene '{}'", sceneName);
+        return false;
+    }
     m_state = GameState::Playing;
     if (!m_options.hiddenWindow) {
         m_window.setRelativeMouse(true);
@@ -130,7 +134,7 @@ void Game::shutdown() {
     if (m_state == GameState::Quitting && !m_context) {
         return;
     }
-    m_devScene.reset();
+    m_scene.reset();
     m_context.reset();
     m_audio.shutdown();
     m_physics.shutdown();
@@ -179,14 +183,17 @@ void Game::pumpEvents() {
 
 void Game::fixedUpdate(float dt) {
     if (m_state == GameState::Playing) {
+        if (m_scene) {
+            m_scene->fixedUpdate(dt);
+        }
         m_physics.step(dt);
     }
 }
 
-void Game::update(float dt, float /*alpha*/) {
+void Game::update(float dt, float alpha) {
     m_mainThread.drain(4.0);
-    if (m_devScene) {
-        m_devScene->update(dt, m_camera);
+    if (m_scene) {
+        m_scene->update(dt, alpha, m_camera);
     }
     if (m_options.cameraPosition) {
         m_camera.position = *m_options.cameraPosition;
@@ -198,7 +205,12 @@ void Game::update(float dt, float /*alpha*/) {
     m_audio.update(dt);
 }
 
-void Game::render(float dt) { m_renderer.renderFrame(m_camera, dt); }
+void Game::render(float dt) {
+    m_renderer.renderFrame(m_camera, dt);
+    if (m_scene) {
+        m_scene->renderOverlay();
+    }
+}
 
 bool Game::handleScreenshotRequests() {
     if (m_options.screenshotPath.empty() || m_frameIndex + 1 < static_cast<u64>(std::max(1, m_options.warmupFrames))) {

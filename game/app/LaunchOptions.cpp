@@ -54,7 +54,9 @@ LaunchOptions LaunchOptions::parse(int argc, char** argv) {
         } else if (a == "--screenshot-suite") {
             o.screenshotSuiteDir = fs::path(std::string(next()));
         } else if (a == "--scene") {
-            o.screenshotScene = next();
+            o.scene = next();
+        } else if (a == "--shot") {
+            o.screenshotShot = next();
         } else if (a == "--warmup-frames") {
             if (auto v = toInt(next())) o.warmupFrames = static_cast<int>(*v);
         } else if (a == "--frames") {
@@ -84,7 +86,8 @@ std::string LaunchOptions::usage() {
            "  --user-dir <path>        override saves/settings directory\n"
            "  --screenshot <file.png>  render warm-up frames, capture, exit\n"
            "  --screenshot-suite <dir> capture the deterministic visual test suite\n"
-           "  --scene <name>           single suite scene\n"
+           "  --scene <name>           development scene (dev, ...)\n"
+           "  --shot <name>            single shot of the screenshot suite\n"
            "  --warmup-frames <n>      frames before capture (default 30)\n"
            "  --frames <n>             exit after n frames\n"
            "  --camera <x> <y> <z> --yaw <deg> --pitch <deg>\n"

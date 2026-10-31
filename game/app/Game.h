@@ -19,7 +19,7 @@
 
 namespace br::game {
 
-class DevScene;
+class GameScene;
 
 enum class GameState { Boot, MainMenu, Loading, Playing, Paused, Quitting };
 
@@ -62,7 +62,7 @@ private:
     levels::LevelRegistry m_levels;
     std::unique_ptr<GameContext> m_context;
 
-    std::unique_ptr<DevScene> m_devScene;
+    std::unique_ptr<GameScene> m_scene;
     Camera m_camera;
 
     GameState m_state = GameState::Boot;

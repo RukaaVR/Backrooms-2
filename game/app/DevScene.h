@@ -3,6 +3,7 @@
 #include "engine/renderer/Camera.h"
 #include "engine/renderer/RenderTypes.h"
 #include "game/app/GameContext.h"
+#include "game/app/GameScene.h"
 
 #include <vector>
 
@@ -11,13 +12,13 @@ namespace br::game {
 // Developer test scene: a single lit room with a free-fly camera. It exists so
 // the renderer, materials and input can be exercised before streamed levels
 // are wired in, and serves as a stable screenshot regression scene.
-class DevScene {
+class DevScene final : public GameScene {
 public:
     explicit DevScene(GameContext& ctx);
-    ~DevScene();
+    ~DevScene() override;
 
-    void build();
-    void update(float dt, Camera& camera);
+    bool build() override;
+    void update(float dt, float alpha, Camera& camera) override;
 
 private:
     GameContext& m_ctx;
