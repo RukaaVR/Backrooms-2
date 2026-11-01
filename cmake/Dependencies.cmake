@@ -130,3 +130,16 @@ if(BR_BUILD_TESTS)
         list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
     endif()
 endif()
+
+# --- Tracy (optional profiler) -------------------------------------------------
+# Off by default: the built-in profiler (engine/core/Profiler.h) covers the
+# in-game overlay; Tracy adds live remote capture for deep profiling sessions.
+if(BR_ENABLE_TRACY)
+    set(TRACY_ENABLE ON CACHE BOOL "" FORCE)
+    set(TRACY_ON_DEMAND ON CACHE BOOL "" FORCE)
+    FetchContent_Declare(tracy
+        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+        GIT_TAG v0.11.1
+        GIT_SHALLOW TRUE)
+    FetchContent_MakeAvailable(tracy)
+endif()

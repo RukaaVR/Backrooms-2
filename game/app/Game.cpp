@@ -1,6 +1,7 @@
 #include "game/app/Game.h"
 
 #include "engine/core/Log.h"
+#include "engine/core/Profiler.h"
 #include "engine/resources/Image.h"
 #include "game/app/GameScene.h"
 
@@ -44,7 +45,11 @@ int Game::run(const LaunchOptions& options) {
         if (handleScreenshotRequests()) {
             break;
         }
-        m_window.swapBuffers();
+        {
+            BR_PROFILE_SCOPE("Game::swapBuffers");
+            m_window.swapBuffers();
+        }
+        BR_PROFILE_FRAME();
         ++m_frameIndex;
         if (m_frameIndex > 1) {
             m_frameTimes.push_back(dt * 1000.0);
@@ -182,6 +187,7 @@ void Game::pumpEvents() {
 }
 
 void Game::fixedUpdate(float dt) {
+    BR_PROFILE_SCOPE("Game::fixedUpdate");
     if (m_state == GameState::Playing) {
         if (m_scene) {
             m_scene->fixedUpdate(dt);
@@ -191,6 +197,7 @@ void Game::fixedUpdate(float dt) {
 }
 
 void Game::update(float dt, float alpha) {
+    BR_PROFILE_SCOPE("Game::update");
     m_mainThread.drain(4.0);
     if (m_scene) {
         m_scene->update(dt, alpha, m_camera);
@@ -206,6 +213,7 @@ void Game::update(float dt, float alpha) {
 }
 
 void Game::render(float dt) {
+    BR_PROFILE_SCOPE("Game::render");
     m_renderer.renderFrame(m_camera, dt);
     if (m_scene) {
         m_scene->renderOverlay();

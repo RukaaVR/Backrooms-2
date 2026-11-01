@@ -20,6 +20,7 @@ option(BR_BUILD_TOOLS "Build developer tools (level validator, asset generator)"
 option(BR_ENABLE_ASAN "Enable AddressSanitizer + UndefinedBehaviorSanitizer" OFF)
 option(BR_WARNINGS_AS_ERRORS "Treat warnings in project code as errors" OFF)
 option(BR_USE_CCACHE "Use ccache when available" ON)
+option(BR_ENABLE_TRACY "Instrument with the Tracy profiler (fetched at configure time)" OFF)
 set(BR_DEPS_ROOT "" CACHE PATH "Optional prebuilt dependency root from tools/scripts/bootstrap_deps.sh")
 
 # All executables land in one directory next to a copy of the runtime assets so the

@@ -1,7 +1,7 @@
 # Architecture — THE BACKROOMS: BEYOND REALITY
 
 Custom native C++20 engine + game. No third-party game engine is used; the only
-dependencies are low-level libraries (see `THIRD_PARTY_LICENSES.md`).
+dependencies are low-level libraries (see `LICENSES/THIRD_PARTY_LICENSES.md`).
 
 ## Technology
 
@@ -109,3 +109,19 @@ auto exposure -> tonemap + grading + grain -> UI. See `docs/RENDERING.md`.
 ## Determinism
 All procedural content derives from `br::Rng` (PCG32) and `hash2i/hash3i`
 (splitmix64). Golden-value tests guard against accidental changes.
+
+## Profiling
+`engine/core/Profiler.h`: `BR_PROFILE_SCOPE("name")` / `BR_PROFILE_FRAME()`. Default
+backend is a lock-free per-call-site aggregator (two relaxed atomics per scope) read once
+per frame for the debug overlay and benchmarks. `-DBR_ENABLE_TRACY=ON` routes the same
+macros to Tracy v0.11.1 for live capture.
+
+## Deviations from the suggested V4 stack/layout (and why)
+| Suggestion | Decision | Reason |
+|---|---|---|
+| spdlog | Custom `br::log` (std::format, thread-safe, file + stderr) | Covers all needs in ~100 lines; avoids a dependency (V4: "do not introduce unnecessary dependencies") |
+| Assimp | Not used | All meshes are generated procedurally in code; no model files to import |
+| Dear ImGui | Planned for **developer tools only** (debug overlay, tuning panels) in the QA/tools wave; the game UI is custom (`engine/ui`) | Keeps shipping UI fully custom while giving developers fast tooling |
+| Tracy | Optional (`BR_ENABLE_TRACY`) | Zero cost when off; built-in profiler always available |
+| `levels/level_000/...` top-level | `game/levels/levelN/` | Level code depends on game systems (generation toolkit, prefabs, entities); keeping it inside `br_game` avoids a third library and circular dependencies. Ownership per level directory is preserved |
+| Status docs at repo root (V3) | Moved to `docs/` (V4) | Latest brief wins; README links them |

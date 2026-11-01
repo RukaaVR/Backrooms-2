@@ -20,6 +20,10 @@ target_link_libraries(br_engine
     PRIVATE
         Threads::Threads)
 find_package(Threads REQUIRED)
+if(BR_ENABLE_TRACY)
+    target_link_libraries(br_engine PUBLIC Tracy::TracyClient)
+    target_compile_definitions(br_engine PUBLIC BR_ENABLE_TRACY=1)
+endif()
 set_target_properties(br_engine PROPERTIES FOLDER "Engine")
 
 # Runtime data layout (identical in the build tree and in packages):

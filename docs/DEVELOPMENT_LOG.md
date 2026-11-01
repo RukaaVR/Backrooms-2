@@ -24,3 +24,15 @@
 ### Wave 1 launched
 Six sub-agents in isolated worktrees: Rendering & Lighting, Materials & Tech
 Art, Physics & Player, Audio, UI/UX + Save, Procedural Generation & Streaming.
+
+### V4 brief adopted (2026-10-31 → 11-01)
+* User supplied MASTER PROMPT V4 + five reference images (Level 0 renders, the original
+  photo, a decayed variant, a warehouse photo for Level 1). Continued rather than restarted:
+  the foundation already matches V4's stack and process.
+* References converted and kept outside the repo (unknown provenance); palette measured
+  (greenish yellow: G ≥ R, B ≈ 0.6R; ceiling lit by bounce) — see `REFERENCES.md`.
+* V4 deltas sent to all seven running agents (see AGENT_TASKS).
+* Moved project-memory docs into `docs/`, licences into `LICENSES/`; added risk register,
+  performance report (no measurements yet — no GPU here), references/provenance.
+* Added built-in profiler + optional Tracy; instrumented the main loop; profiler test.
+* Usage limit interrupted all agents; resumed after reset from their saved worktrees.
