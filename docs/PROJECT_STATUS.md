@@ -52,6 +52,10 @@ Everything in AGENT_TASKS.md waves 1–4. Physics and audio are currently
 | Horror & Level Design (docs) | `worktree-agent-af748374b223db8a1` |
 Worktrees live under `.claude/worktrees/` (git-ignored). Branches are local until merged.
 
+## Agent policy (since 2026-11-01)
+Commit after every working step; report when the core deliverable is tested; polish goes to fresh follow-up agents.
+Critical path first: Physics/Player, Generation, Rendering, Materials -> then UI, Audio, Lore.
+
 ## Exact next task
 Integrate wave-1 branches in order: Physics → Generation → Materials → Rendering → Audio → UI; then wire the
 Level 0 vertical slice (menu → load Level 0 → walk, interact, hear, save).

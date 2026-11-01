@@ -36,3 +36,15 @@ Art, Physics & Player, Audio, UI/UX + Save, Procedural Generation & Streaming.
   performance report (no measurements yet — no GPU here), references/provenance.
 * Added built-in profiler + optional Tracy; instrumented the main loop; profiler test.
 * Usage limit interrupted all agents; resumed after reset from their saved worktrees.
+
+### 2026-11-01 — second usage-limit interruption; convergence strategy
+* All seven agents were stopped by the 5-hour usage limit a second time. Committed so far:
+  Physics (Jolt PhysicsWorld + CharacterVirtual controller), Audio (OpenAL mixer, EFX
+  presets, DSP toolkit), UI (SDF fonts with kerning, UI renderer, keybind capture),
+  Rendering (foundation: ring buffers, mesh pool, GPU profiler, struct mirrors), Lore
+  (LORE_REFERENCE.md). Materials and Generation had substantial uncommitted work.
+* Lesson: very long agent transcripts burn the usage window. New policy: agents commit
+  after every working step and report as soon as their core deliverable is tested;
+  polish goes to fresh, focused follow-up agents (smaller context, cheaper per step).
+* Resumed the critical path for the Level 0 vertical slice first: Physics/Player,
+  Generation, Rendering, Materials. UI, Audio and Lore resume after these land.
