@@ -109,3 +109,28 @@ TEST_CASE("Atomic file write replaces content and leaves no temp files", "[core]
     }
     REQUIRE(count == 1);
 }
+
+#include "engine/core/Profiler.h"
+
+#include <thread>
+
+TEST_CASE("Built-in profiler aggregates scopes across threads per frame", "[core][profiler]") {
+    auto work = [] {
+        BR_PROFILE_SCOPE("test.profiled_scope");
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    };
+    profile::endFrame(); // reset anything accumulated by earlier tests
+    std::thread t(work);
+    work();
+    t.join();
+    profile::endFrame();
+    const auto s = profile::samples();
+    const auto it = std::find_if(s.begin(), s.end(), [](const auto& x) { return x.name == "test.profiled_scope"; });
+    REQUIRE(it != s.end());
+    REQUIRE(it->calls == 2);
+    REQUIRE(it->lastFrameMs >= 3.5);
+    profile::endFrame();
+    const auto s2 = profile::samples();
+    const auto it2 = std::find_if(s2.begin(), s2.end(), [](const auto& x) { return x.name == "test.profiled_scope"; });
+    REQUIRE(it2->calls == 0);
+}

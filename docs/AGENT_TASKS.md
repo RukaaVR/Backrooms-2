@@ -39,9 +39,22 @@ Status legend: `TODO` · `IN PROGRESS` · `REVIEW` · `DONE` · `BLOCKED`
 | W1-P | Physics & Player | Jolt PhysicsWorld + CharacterController, PlayerController (movement feel, crouch, stairs, camera bob), interaction (raycast, pick up/carry/throw, hinged doors), buoyancy | IN PROGRESS |
 | W1-A | Audio | OpenAL Soft mixer + EFX reverb/low-pass, procedural synthesis bank (hum, footsteps per surface, impacts, ambience beds, entity sounds), soundscape system | IN PROGRESS |
 | W1-U | UI/UX + Save | SDF font + UI renderer, widgets, main/pause/settings/level-select/extras menus, HUD, versioned atomic save system | IN PROGRESS |
-| W1-G | Procedural Generation | Chunk streamer, WorldStreamer (payload -> renderer/physics), Level 0 generator, connectivity validator + map dump, tests | IN PROGRESS |
+| W1-G | Procedural Generation | Chunk streamer, WorldStreamer (payload -> renderer/physics), Level 0 generator (incl. authored spawn landmark recreating the original photo), connectivity validator + map dump, tests | IN PROGRESS |
+| W1-L | Horror & Level Design | Lore research (Wikidot primary) -> `LORE_REFERENCE.md`, `LEVEL_SPECIFICATIONS.md`, `HORROR_DIRECTOR.md`, `ITEMS_AND_SURVIVAL.md`, `GAME_DESIGN.md` | IN PROGRESS |
+
+Note: on 2026-10-31 all wave-1 agents were interrupted by a usage limit and resumed from
+their saved worktrees after the reset (no work lost; see DEVELOPMENT_LOG).
+
+V4 brief deltas delivered to the running agents: reference images + measured palette
+targets (materials, rendering, generation), Level 0 fidelity details (casing trim, chair
+rail, 2x2/2x4 troffers, outlets, rare missing tiles, authored spawn landmark), slider
+constraints/drawers/door types/swim API/viewmodel state (physics), menu label changes
+(UI), unattributed sounds/ducking/meters (audio), V4 document names (lore).
 
 ## Wave 2 — Gameplay depth (planned)
+* Animation engineer (new in V4): first-person viewmodel (procedural hands, flashlight, interaction gestures, item use, swimming strokes) and code-driven skeletal animation for entities
+* Environment artist (Agent 06): modular architecture kit + prop library (`fixture.*`, `door.*`, `prop.*` prefabs), level set dressing with environmental storytelling
+* QA: asset validator (missing materials/prefabs/sounds, dimensions, collision sanity)
 * AI: navigation (grid A* from NavGrid), perception, FSM; Hounds, Smilers, Facelings, Skin-Stealers, Partygoers
 * Gameplay: inventory, items (flashlight, batteries, almond water, keys, documents, med kits), survival stats, checkpoints, no-clip transitions, progression
 * Horror director, environmental events
