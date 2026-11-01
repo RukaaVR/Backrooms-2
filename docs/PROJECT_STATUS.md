@@ -52,6 +52,10 @@ Everything in AGENT_TASKS.md waves 1–4. Physics and audio are currently
 | Horror & Level Design (docs) | `worktree-agent-af748374b223db8a1` |
 Worktrees live under `.claude/worktrees/` (git-ignored). Branches are local until merged.
 
+## Environment notes
+After a container restart run `source tools/scripts/dev_env.sh` (restarts Xvfb :99; system packages and
+`/home/user/br-deps` persist). Background agents are resumed by the harness automatically.
+
 ## Agent policy (since 2026-11-01)
 Commit after every working step; report when the core deliverable is tested; polish goes to fresh follow-up agents.
 Critical path first: Physics/Player, Generation, Rendering, Materials -> then UI, Audio, Lore.
